@@ -12,6 +12,9 @@
   "dependencies": {
     "@react-native-firebase/app": "^16.5.1",
     "@react-native-firebase/auth": "^16.5.1",
+    "firebase": "^9.16.0",
+    "firebase-tools": "^11.21.0",
+    "global": "^4.4.0",
     "react": "18.2.0",
     "react-native": "0.71.1"
   },
