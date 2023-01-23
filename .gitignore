@@ -185,7 +185,6 @@ package-lock.json
 /ReactCommon/react/renderer/components/rncore/
 /packages/rn-tester/NativeModuleExample/ScreenshotManagerSpec*
 
-
 # Additional SDKs
 /sdks/download
 /sdks/hermes
@@ -204,3 +203,5 @@ package-lock.json
 #Firebase
 GoogleService-Info.plist
 google-services.json
+
+.env
