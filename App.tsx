@@ -1,118 +1,81 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {useState} from 'react';
+import {Button, TextInput, View} from 'react-native';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
+import {authentication} from './firebase/firebase-config';
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  //TODO: Set up navigation pages and separate auth logic
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const RegisterUser = async () => {
+    try {
+      const {user} = await createUserWithEmailAndPassword(
+        authentication,
+        email,
+        password,
+      );
+      setIsSignedIn(true);
+
+      console.log(user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const SignInUser = async () => {
+    try {
+      const {user} = await signInWithEmailAndPassword(
+        authentication,
+        email,
+        password,
+      );
+      setIsSignedIn(true);
+
+      console.log(user.email);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const SignOutUser = async () => {
+    try {
+      const re = await signOut(authentication);
+      setIsSignedIn(false);
+
+      console.log(re);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <View>
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={input => setEmail(input)}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <TextInput
+        placeholder="Password"
+        value={password}
+        secureTextEntry={true}
+        onChangeText={input => setPassword(input)}
+      />
+      <Button title="Sign Up" onPress={RegisterUser} />
+      {isSignedIn === true ? (
+        <Button title="Sign Out" onPress={SignOutUser} />
+      ) : (
+        <Button title="Sign In" onPress={SignInUser} />
+      )}
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
