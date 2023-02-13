@@ -1,32 +1,17 @@
 import React, {useState} from 'react';
 import {Button, StyleSheet, TextInput, View} from 'react-native';
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from 'firebase/auth';
+import {signInWithEmailAndPassword, signOut} from 'firebase/auth';
 import {authentication} from '../../firebase/firebase-config';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-const LoginScreen = (): JSX.Element => {
+type LoginScreenParameters = {};
+
+type Props = NativeStackScreenProps<LoginScreenParameters>;
+
+const LoginScreen = ({navigation}: Props): JSX.Element => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const RegisterUser = async () => {
-    try {
-      const {user} = await createUserWithEmailAndPassword(
-        authentication,
-        email,
-        password,
-      );
-      setIsSignedIn(true);
-
-      console.log(user);
-      console.log('Registered');
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const SignInUser = async () => {
     try {
@@ -55,7 +40,6 @@ const LoginScreen = (): JSX.Element => {
       console.log(error);
     }
   };
-
   return (
     <View style={styles.inputContainer}>
       <TextInput
@@ -69,12 +53,12 @@ const LoginScreen = (): JSX.Element => {
         secureTextEntry={true}
         onChangeText={input => setPassword(input)}
       />
-      <Button title="Sign Up" onPress={RegisterUser} />
       {isSignedIn === true ? (
         <Button title="Sign Out" onPress={SignOutUser} />
       ) : (
         <Button title="Sign In" onPress={SignInUser} />
       )}
+      <Button title="Sign Up" onPress={() => navigation.navigate('Register')} />
     </View>
   );
 };
